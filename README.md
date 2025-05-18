@@ -3,7 +3,6 @@
 ## **Hosted Links**
 - **Vercel-hosted Web App:** [Vercel](https://group7-tcss460-front-end.vercel.app/)
 - **Heroku-hosted Web API:** [Heroku](https://group4-tcss460-web-api-88aed6dd5161.herokuapp.com/)
-- **GitHub Pages-hosted API Documentation:** [Github](https://ahwang5.github.io/TCSS-460-Web-API/)
 
 ## **Team Contributions**
 - **Bhavneet** – Fixed bugs so group 1 can use our API.
