@@ -71,13 +71,30 @@ export default function AuthRegister({ providers, csrfToken }: any) {
           submit: null
         }}
         validationSchema={Yup.object().shape({
-          firstname: Yup.string().max(255).required('First Name is required'),
-          lastname: Yup.string().max(255).required('Last Name is required'),
-          email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
+          firstname: Yup.string()
+            .max(50, 'First Name must be less than 50 characters')
+            .required('First Name is required')
+            .matches(/^[a-zA-Z\s]*$/, 'First Name can only contain letters and spaces'),
+          lastname: Yup.string()
+            .max(50, 'Last Name must be less than 50 characters')
+            .required('Last Name is required')
+            .matches(/^[a-zA-Z\s]*$/, 'Last Name can only contain letters and spaces'),
+          email: Yup.string()
+            .email('Must be a valid email')
+            .max(100, 'Email must be less than 100 characters')
+            .required('Email is required')
+            .matches(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, 'Invalid email format'),
+          company: Yup.string()
+            .max(100, 'Company name must be less than 100 characters'),
           password: Yup.string()
             .required('Password is required')
+            .min(8, 'Password must be at least 8 characters')
+            .max(50, 'Password must be less than 50 characters')
+            .matches(
+              /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+              'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character'
+            )
             .test('no-leading-trailing-whitespace', 'Password cannot start or end with spaces', (value) => value === value.trim())
-            .max(10, 'Password must be less than 10 characters')
         })}
         onSubmit={async (values, { setErrors, setSubmitting }) => {
           const trimmedEmail = values.email.trim();

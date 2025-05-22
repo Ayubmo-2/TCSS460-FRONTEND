@@ -1,5 +1,4 @@
-// next
-import type { NextAuthOptions } from 'next-auth';
+import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 
 // Mock user data
@@ -16,7 +15,7 @@ const mockUsers = [
   }
 ];
 
-export const authOptions: NextAuthOptions = {
+export default NextAuth({
   providers: [
     CredentialsProvider({
       id: 'login',
@@ -132,4 +131,4 @@ export const authOptions: NextAuthOptions = {
   },
   secret: process.env.NEXTAUTH_SECRET_KEY,
   debug: true
-};
+}); 

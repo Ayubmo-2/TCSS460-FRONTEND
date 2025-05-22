@@ -65,11 +65,20 @@ export default function AuthLogin({ providers, csrfToken }: any) {
           submit: null
         }}
         validationSchema={Yup.object().shape({
-          email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
+          email: Yup.string()
+            .email('Must be a valid email')
+            .max(100, 'Email must be less than 100 characters')
+            .required('Email is required')
+            .matches(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, 'Invalid email format'),
           password: Yup.string()
             .required('Password is required')
+            .min(8, 'Password must be at least 8 characters')
+            .max(50, 'Password must be less than 50 characters')
+            .matches(
+              /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+              'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character'
+            )
             .test('no-leading-trailing-whitespace', 'Password cannot start or end with spaces', (value) => value === value.trim())
-            .max(10, 'Password must be less than 10 characters')
         })}
         onSubmit={(values, { setErrors, setSubmitting }) => {
           const trimmedEmail = values.email.trim();
