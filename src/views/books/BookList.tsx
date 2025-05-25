@@ -75,10 +75,10 @@ export default function BookList() {
           {books.map((book) => (
             <Grid item xs={12} sm={6} md={4} key={book.id}>
               <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-                <Box sx={{ 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  justifyContent: 'center', 
+                <Box sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
                   p: 4,
                   backgroundColor: 'primary.light',
                   color: 'primary.contrastText'
@@ -125,4 +125,4 @@ export default function BookList() {
       </Container>
     </MainCard>
   );
-} 
+}
