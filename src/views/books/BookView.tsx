@@ -3,18 +3,7 @@
 import { useState } from 'react';
 
 // material-ui
-import {
-  Box,
-  Card,
-  CardContent,
-  Grid,
-  Rating,
-  Typography,
-  Container,
-  Button,
-  Stack,
-  Divider
-} from '@mui/material';
+import { Box, Card, CardContent, Grid, Rating, Typography, Container, Button, Stack, Divider } from '@mui/material';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 
 // project import
@@ -66,12 +55,7 @@ export default function BookView() {
                   <Typography variant="subtitle1" sx={{ mr: 1 }}>
                     Your Rating:
                   </Typography>
-                  <Rating
-                    value={userRating}
-                    precision={0.5}
-                    onChange={handleRatingChange}
-                    size="large"
-                  />
+                  <Rating value={userRating} precision={0.5} onChange={handleRatingChange} size="large" />
                 </Box>
                 <Divider sx={{ my: 2 }} />
                 <Typography variant="body1" paragraph>
@@ -113,4 +97,4 @@ export default function BookView() {
       </Container>
     </MainCard>
   );
-} 
+}

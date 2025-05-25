@@ -6,4 +6,4 @@ import BookView from 'views/books/BookView';
 
 export default function BookViewPage() {
   return <BookView />;
-} 
+}

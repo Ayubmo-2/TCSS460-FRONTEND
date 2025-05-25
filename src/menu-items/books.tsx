@@ -44,4 +44,4 @@ const books: NavItemType = {
   ]
 };
 
-export default books; 
+export default books;

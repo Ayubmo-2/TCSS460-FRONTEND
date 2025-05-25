@@ -20,7 +20,6 @@ axiosServices.interceptors.request.use(
   }
 );
 
-
 axiosServices.interceptors.response.use(
   (response) => response,
   (error) => {

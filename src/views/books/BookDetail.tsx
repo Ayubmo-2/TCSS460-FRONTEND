@@ -2,22 +2,13 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import {
-  Box,
-  Container,
-  Typography,
-  Rating,
-  Paper,
-  Grid,
-  Button,
-  TextField
-} from '@mui/material';
+import { Box, Container, Typography, Rating, Paper, Grid, Button, TextField } from '@mui/material';
 import { mockBooks } from '../../utils/mockBooks';
 
 const BookDetail = () => {
   const params = useParams();
   const router = useRouter();
-  const book = mockBooks.find(b => b.id === (params as { id: string }).id);
+  const book = mockBooks.find((b) => b.id === (params as { id: string }).id);
   const [rating, setRating] = useState(book?.rating || 0);
   const [comment, setComment] = useState('');
 
@@ -46,14 +37,10 @@ const BookDetail = () => {
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-      <Button 
-        variant="outlined" 
-        onClick={() => router.push('/books')}
-        sx={{ mb: 3 }}
-      >
+      <Button variant="outlined" onClick={() => router.push('/books')} sx={{ mb: 3 }}>
         Back to Books
       </Button>
-      
+
       <Paper elevation={3} sx={{ p: 3 }}>
         <Grid container spacing={4}>
           <Grid item xs={12} md={4}>
@@ -68,27 +55,27 @@ const BookDetail = () => {
               }}
             />
           </Grid>
-          
+
           <Grid item xs={12} md={8}>
             <Typography variant="h4" component="h1" gutterBottom>
               {book.title}
             </Typography>
-            
+
             <Typography variant="h6" color="text.secondary" gutterBottom>
               by {book.author}
             </Typography>
-            
+
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
               <Rating value={book.rating} precision={0.5} readOnly />
               <Typography variant="body2" color="text.secondary" sx={{ ml: 1 }}>
                 ({book.rating} average rating)
               </Typography>
             </Box>
-            
+
             <Typography variant="body1" paragraph>
               {book.description}
             </Typography>
-            
+
             <Grid container spacing={2} sx={{ mt: 2 }}>
               <Grid item xs={6}>
                 <Typography variant="subtitle2" color="text.secondary">
@@ -138,11 +125,7 @@ const BookDetail = () => {
         <form onSubmit={handleSubmit}>
           <Box sx={{ mb: 2 }}>
             <Typography component="legend">Your Rating</Typography>
-            <Rating
-              value={rating}
-              precision={0.5}
-              onChange={handleRatingChange}
-            />
+            <Rating value={rating} precision={0.5} onChange={handleRatingChange} />
           </Box>
           <TextField
             fullWidth
@@ -162,4 +145,4 @@ const BookDetail = () => {
   );
 };
 
-export default BookDetail; 
+export default BookDetail;

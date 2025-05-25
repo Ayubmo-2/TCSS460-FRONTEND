@@ -4,17 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 // material-ui
-import {
-  Box,
-  Card,
-  CardContent,
-  Grid,
-  Rating,
-  Typography,
-  Button,
-  Container,
-  Stack
-} from '@mui/material';
+import { Box, Card, CardContent, Grid, Rating, Typography, Button, Container, Stack } from '@mui/material';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 
 // project import
@@ -75,14 +65,16 @@ export default function BookList() {
           {books.map((book) => (
             <Grid item xs={12} sm={6} md={4} key={book.id}>
               <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-                <Box sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  p: 4,
-                  backgroundColor: 'primary.light',
-                  color: 'primary.contrastText'
-                }}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    p: 4,
+                    backgroundColor: 'primary.light',
+                    color: 'primary.contrastText'
+                  }}
+                >
                   <MenuBookIcon sx={{ fontSize: 100 }} />
                 </Box>
                 <CardContent sx={{ flexGrow: 1 }}>
@@ -109,12 +101,7 @@ export default function BookList() {
                   <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                     {book.description}
                   </Typography>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    fullWidth
-                    onClick={() => handleViewBook(book.id)}
-                  >
+                  <Button variant="contained" color="primary" fullWidth onClick={() => handleViewBook(book.id)}>
                     View Details
                   </Button>
                 </CardContent>
