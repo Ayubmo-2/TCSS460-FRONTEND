@@ -19,6 +19,7 @@ _The team used Discord voice chat for real-time communication and discussion dur
 
 ## **Sprint Comments**
 - All the beta I sprint requirements work in the ayubs-branch, it will be merged into main in the next sprint.
+- mock login for testing - username: test@example.com password: Test123!@ 
 
 
 
