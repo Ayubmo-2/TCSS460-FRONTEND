@@ -17,7 +17,7 @@ import { mockBooks } from '../../utils/mockBooks';
 const BookDetail = () => {
   const params = useParams();
   const router = useRouter();
-  const [book, setBook] = useState(mockBooks.find(b => b.id === params.id));
+  const book = mockBooks.find(b => b.id === (params as { id: string }).id);
   const [rating, setRating] = useState(book?.rating || 0);
   const [comment, setComment] = useState('');
 
