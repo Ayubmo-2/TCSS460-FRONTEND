@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Box, Container, Typography, Rating, Paper, Grid, Button, TextField } from '@mui/material';
 import { mockBooks } from '../../utils/mockBooks';
+import Image from 'next/image';
 
 const BookDetail = () => {
   const params = useParams();
@@ -44,9 +45,11 @@ const BookDetail = () => {
       <Paper elevation={3} sx={{ p: 3 }}>
         <Grid container spacing={4}>
           <Grid item xs={12} md={4}>
-            <img
+            <Image
               src={book.coverImage}
               alt={book.title}
+              width={500}
+              height={600}
               style={{
                 width: '100%',
                 height: 'auto',
