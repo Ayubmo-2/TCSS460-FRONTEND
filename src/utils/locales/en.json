@@ -13,5 +13,18 @@
   "sample-page": "Sample Page",
   "send-message": "Send Message",
   "under-construction": "Under Construction",
-  "view-messages": "View Messages"
+  "view-messages": "View Messages",
+  "books": "Books",
+  "view-book": "View Book",
+  "list-books": "List Books",
+  "book-details": "Book Details",
+  "book-list": "Book List",
+  "your-rating": "Your Rating",
+  "published-year": "Published Year",
+  "genre": "Genre",
+  "language": "Language",
+  "publisher": "Publisher",
+  "back-to-list": "Back to Book List",
+  "book-not-found": "Book Not Found",
+  "view-details": "View Details"
 }
