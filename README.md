@@ -1,7 +1,7 @@
 # **TCSS 460 – Beta I Sprint Front End Project**
 
 ## **Hosted Links**
-- **Vercel-hosted Web App:** [Vercel]([https://group7-tcss460-front-end.vercel.app/](https://group7-tcss460-front-git-4dab59-ayub-mohameds-projects-aeb98294.vercel.app/))
+- **Vercel-hosted Web App:** [Vercel](https://group7-tcss460-front-git-4dab59-ayub-mohameds-projects-aeb98294.vercel.app/)
 - **Heroku-hosted Web API:** [Heroku](https://group4-tcss460-web-api-88aed6dd5161.herokuapp.com/)
 
 ## **Team Contributions**
