@@ -3,15 +3,22 @@ import axios, { AxiosRequestConfig } from 'axios';
 // next
 import { getSession } from 'next-auth/react';
 
-const axiosServices = axios.create({ baseURL: process.env.WEB_API_URL || 'http://localhost:3010/' });
+const baseURL = 'https://group4-tcss460-web-api-88aed6dd5161.herokuapp.com';
+
+const axiosInstance = axios.create({
+  baseURL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
 
 // ==============================|| AXIOS - FOR MOCK SERVICES ||============================== //
 
-axiosServices.interceptors.request.use(
+axiosInstance.interceptors.request.use(
   async (config) => {
     const session = await getSession();
     if (session?.accessToken) {
-      config.headers['Authorization'] = `Bearer ${session.accessToken}`;
+      config.headers.Authorization = `Bearer ${session.accessToken}`;
     }
     return config;
   },
@@ -20,7 +27,7 @@ axiosServices.interceptors.request.use(
   }
 );
 
-axiosServices.interceptors.response.use(
+axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.code === 'ECONNREFUSED') {
@@ -51,18 +58,19 @@ axiosServices.interceptors.response.use(
     return Promise.reject((error.response && error.response.data) || 'Server connection refused');
   }
 );
-export default axiosServices;
+
+export default axiosInstance;
 
 export const fetcher = async (args: string | [string, AxiosRequestConfig]) => {
   const [url, config] = Array.isArray(args) ? args : [args];
-  const res = await axiosServices.get(url, { ...config });
+  const res = await axiosInstance.get(url, { ...config });
 
   return res.data;
 };
 
 export const fetcherPost = async (args: string | [string, AxiosRequestConfig]) => {
   const [url, config] = Array.isArray(args) ? args : [args];
-  const res = await axiosServices.post(url, { ...config });
+  const res = await axiosInstance.post(url, { ...config });
 
   return res.data;
 };

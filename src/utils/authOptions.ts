@@ -1,6 +1,8 @@
 // next
-import type { NextAuthOptions } from 'next-auth';
+import type { NextAuthOptions, User } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
+import NextAuth from 'next-auth';
+import axiosInstance from './axios';
 
 // Mock user data
 const mockUsers = [
@@ -16,7 +18,12 @@ const mockUsers = [
   }
 ];
 
-export const authOptions: NextAuthOptions = {
+type CustomUser = User & {
+  accessToken?: string;
+  refreshToken?: string;
+};
+
+export default NextAuth({
   providers: [
     CredentialsProvider({
       id: 'login',
@@ -31,23 +38,24 @@ export const authOptions: NextAuthOptions = {
             throw new Error('Email and password are required');
           }
 
-          // Mock API call - find user
-          const user = mockUsers.find((u) => u.email === credentials.email.trim());
+          const response = await axiosInstance.post('/login', {
+            email: credentials.email.trim(),
+            password: credentials.password
+          });
 
-          if (!user || user.password !== credentials.password) {
-            throw new Error('Invalid credentials');
+          if (response.data && response.data.accessToken && response.data.user) {
+            return {
+              id: response.data.user.id,
+              email: response.data.user.email,
+              name: response.data.user.name,
+              accessToken: response.data.accessToken,
+              refreshToken: '' // Not provided by API, but required by type
+            };
           }
-
-          return {
-            id: user.id,
-            email: user.email,
-            name: `${user.firstname} ${user.lastname}`,
-            accessToken: user.token,
-            refreshToken: user.refreshToken
-          };
+          return null;
         } catch (error: any) {
           console.error('Login error:', error);
-          throw new Error(error.message || 'Invalid credentials');
+          throw new Error(error.response?.data?.message || 'Invalid credentials');
         }
       }
     }),
@@ -58,45 +66,40 @@ export const authOptions: NextAuthOptions = {
         firstname: { name: 'firstname', label: 'First Name', type: 'text', placeholder: 'Enter First Name' },
         lastname: { name: 'lastname', label: 'Last Name', type: 'text', placeholder: 'Enter Last Name' },
         email: { name: 'email', label: 'Email', type: 'email', placeholder: 'Enter Email' },
-        company: { name: 'company', label: 'Company', type: 'text', placeholder: 'Enter Company' },
-        password: { name: 'password', label: 'Password', type: 'password', placeholder: 'Enter Password' }
+        password: { name: 'password', label: 'Password', type: 'password', placeholder: 'Enter Password' },
+        username: { name: 'username', label: 'Username', type: 'text', placeholder: 'Enter Username' },
+        role: { name: 'role', label: 'Role', type: 'text', placeholder: 'Enter Role (1-5)' },
+        phone: { name: 'phone', label: 'Phone', type: 'text', placeholder: 'Enter Phone Number' }
       },
       async authorize(credentials) {
         try {
-          if (!credentials?.email || !credentials?.password || !credentials?.firstname || !credentials?.lastname) {
+          if (!credentials?.email || !credentials?.password || !credentials?.firstname || !credentials?.lastname || !credentials?.username || !credentials?.role || !credentials?.phone) {
             throw new Error('All required fields must be provided');
           }
 
-          // Mock API call - check if user exists
-          const existingUser = mockUsers.find((u) => u.email === credentials.email.trim());
-          if (existingUser) {
-            throw new Error('User already exists');
-          }
-
-          // Mock API call - create new user
-          const newUser = {
-            id: String(mockUsers.length + 1),
-            email: credentials.email.trim(),
-            password: credentials.password,
+          const response = await axiosInstance.post('/register', {
             firstname: credentials.firstname.trim(),
             lastname: credentials.lastname.trim(),
-            company: credentials.company?.trim() || '',
-            token: 'mock-jwt-token',
-            refreshToken: 'mock-refresh-token'
-          };
+            email: credentials.email.trim(),
+            password: credentials.password,
+            username: credentials.username.trim(),
+            role: credentials.role.trim(),
+            phone: credentials.phone.trim()
+          });
 
-          mockUsers.push(newUser);
-
-          return {
-            id: newUser.id,
-            email: newUser.email,
-            name: `${newUser.firstname} ${newUser.lastname}`,
-            accessToken: newUser.token,
-            refreshToken: newUser.refreshToken
-          };
+          if (response.data && response.data.accessToken && response.data.user) {
+            return {
+              id: response.data.user.id,
+              email: response.data.user.email,
+              name: response.data.user.name,
+              accessToken: response.data.accessToken,
+              refreshToken: '' // Not provided by API, but required by type
+            };
+          }
+          return null;
         } catch (error: any) {
           console.error('Registration error:', error);
-          throw new Error(error.message || 'Registration failed');
+          throw new Error(error.response?.data?.message || 'Registration failed');
         }
       }
     })
@@ -104,8 +107,8 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     jwt: async ({ token, user, account }) => {
       if (user) {
-        token.accessToken = user.accessToken;
-        token.refreshToken = user.refreshToken;
+        token.accessToken = (user as CustomUser).accessToken;
+        token.refreshToken = (user as CustomUser).refreshToken;
         token.id = user.id;
         token.provider = account?.provider || 'credentials';
       }
@@ -116,7 +119,6 @@ export const authOptions: NextAuthOptions = {
         session.id = token.id;
         session.provider = token.provider || 'credentials';
         session.accessToken = token.accessToken;
-        session.refreshToken = token.refreshToken;
       }
       return session;
     }
@@ -132,4 +134,4 @@ export const authOptions: NextAuthOptions = {
   },
   secret: process.env.NEXTAUTH_SECRET_KEY,
   debug: true
-};
+});
