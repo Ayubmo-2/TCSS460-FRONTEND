@@ -6,7 +6,7 @@ const mockUsers = [
   {
     id: '1',
     email: 'test@example.com',
-    password: 'Test123!@#',
+    password: 'Test123!@',
     firstname: 'Test',
     lastname: 'User',
     company: 'Test Company',
@@ -31,8 +31,8 @@ export default NextAuth({
           }
 
           // Mock API call - find user
-          const user = mockUsers.find(u => u.email === credentials.email.trim());
-          
+          const user = mockUsers.find((u) => u.email === credentials.email.trim());
+
           if (!user || user.password !== credentials.password) {
             throw new Error('Invalid credentials');
           }
@@ -67,7 +67,7 @@ export default NextAuth({
           }
 
           // Mock API call - check if user exists
-          const existingUser = mockUsers.find(u => u.email === credentials.email.trim());
+          const existingUser = mockUsers.find((u) => u.email === credentials.email.trim());
           if (existingUser) {
             throw new Error('User already exists');
           }
@@ -131,4 +131,4 @@ export default NextAuth({
   },
   secret: process.env.NEXTAUTH_SECRET_KEY,
   debug: true
-}); 
+});

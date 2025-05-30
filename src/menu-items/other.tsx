@@ -6,6 +6,7 @@ import QuestionOutlined from '@ant-design/icons/QuestionOutlined';
 import StopOutlined from '@ant-design/icons/StopOutlined';
 import PhoneOutlined from '@ant-design/icons/PhoneOutlined';
 import FullscreenOutlined from '@ant-design/icons/FullscreenOutlined';
+import LockOutlined from '@ant-design/icons/LockOutlined';
 
 // type
 import { NavItemType } from 'types/menu';
@@ -15,7 +16,8 @@ const icons = {
   QuestionOutlined,
   StopOutlined,
   PhoneOutlined,
-  FullscreenOutlined
+  FullscreenOutlined,
+  LockOutlined
 };
 
 // ==============================|| MENU ITEMS - SUPPORT ||============================== //
@@ -48,6 +50,13 @@ const other: NavItemType = {
       icon: icons.QuestionOutlined,
       external: true,
       target: true
+    },
+    {
+      id: 'change-password',
+      title: 'Change Password',
+      type: 'item',
+      url: '/change-password',
+      icon: icons.LockOutlined
     }
   ]
 };
