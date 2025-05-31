@@ -1,20 +1,27 @@
 import type { Metadata } from 'next';
-
-import './globals.css';
+import { Inter } from 'next/font/google';
+import '../styles/globals.css';
 
 // PROJECT IMPORTS
-import ProviderWrapper from './ProviderWrapper';
+import { Providers } from './providers';
+import { ConfigProvider } from '@/contexts/ConfigContext';
+
+const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'TCSS 460 UI Template',
-  description: 'TCSS 460 UI Template'
+  title: 'Book Search App',
+  description: 'Search and discover books',
 };
 
-export default function RootLayout({ children }: { children: React.ReactElement }) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body>
-        <ProviderWrapper>{children}</ProviderWrapper>
+      <body className={inter.className}>
+        <ConfigProvider>
+          <Providers>
+            {children}
+          </Providers>
+        </ConfigProvider>
       </body>
     </html>
   );

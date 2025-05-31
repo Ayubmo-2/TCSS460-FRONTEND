@@ -1,7 +1,6 @@
 // next
 import type { NextAuthOptions, User } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import NextAuth from 'next-auth';
 import axiosInstance from './axios';
 
 // Mock user data
@@ -23,41 +22,47 @@ type CustomUser = User & {
   refreshToken?: string;
 };
 
-export default NextAuth({
+export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
-      id: 'login',
-      name: 'login',
+      name: 'Credentials',
       credentials: {
-        email: { name: 'email', label: 'Email', type: 'email', placeholder: 'Enter Email' },
-        password: { name: 'password', label: 'Password', type: 'password', placeholder: 'Enter Password' }
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" }
       },
       async authorize(credentials) {
-        try {
-          if (!credentials?.email || !credentials?.password) {
-            throw new Error('Email and password are required');
-          }
+        if (!credentials?.email || !credentials?.password) {
+          return null;
+        }
 
-          const response = await axiosInstance.post('/login', {
-            email: credentials.email.trim(),
-            password: credentials.password
+        try {
+          const res = await fetch('https://group4-tcss460-web-api-88aed6dd5161.herokuapp.com/auth/login', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              email: credentials.email,
+              password: credentials.password,
+            }),
           });
 
-          if (response.data && response.data.accessToken && response.data.user) {
+          const user = await res.json();
+
+          if (res.ok && user) {
             return {
-              id: response.data.user.id,
-              email: response.data.user.email,
-              name: response.data.user.name,
-              accessToken: response.data.accessToken,
-              refreshToken: '' // Not provided by API, but required by type
+              id: user.id,
+              email: user.email,
+              name: user.name,
+              accessToken: user.accessToken,
             };
           }
           return null;
-        } catch (error: any) {
-          console.error('Login error:', error);
-          throw new Error(error.response?.data?.message || 'Invalid credentials');
+        } catch (error) {
+          console.error('Auth error:', error);
+          return null;
         }
-      }
+      },
     }),
     CredentialsProvider({
       id: 'register',
@@ -105,23 +110,18 @@ export default NextAuth({
     })
   ],
   callbacks: {
-    jwt: async ({ token, user, account }) => {
+    async jwt({ token, user }) {
       if (user) {
-        token.accessToken = (user as CustomUser).accessToken;
-        token.refreshToken = (user as CustomUser).refreshToken;
-        token.id = user.id;
-        token.provider = account?.provider || 'credentials';
+        token.accessToken = user.accessToken;
       }
       return token;
     },
-    session: ({ session, token }) => {
+    async session({ session, token }) {
       if (token) {
-        session.id = token.id;
-        session.provider = token.provider || 'credentials';
         session.accessToken = token.accessToken;
       }
       return session;
-    }
+    },
   },
   pages: {
     signIn: '/login',
@@ -134,4 +134,4 @@ export default NextAuth({
   },
   secret: process.env.NEXTAUTH_SECRET_KEY,
   debug: true
-});
+};

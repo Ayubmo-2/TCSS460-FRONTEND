@@ -25,7 +25,8 @@ const nextConfig = {
         hostname: 'flagcdn.com',
         pathname: '**'
       }
-    ]
+    ],
+    domains: ['images.gr-assets.com'],
   },
   env: {
     NEXTAUTH_URL: process.env.NEXTAUTH_URL || 'http://localhost:3001',
