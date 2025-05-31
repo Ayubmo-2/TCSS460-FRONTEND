@@ -1,12 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { Box, Typography, Container, TextField, Button, MenuItem, CircularProgress } from '@mui/material';
 import BookList from '@/views/books/BookList';
 import axios from 'axios';
-import { useIntl } from 'react-intl';
 import { Book } from '@/types/book';
 
 const publicAxios = axios.create({
@@ -17,9 +14,6 @@ const publicAxios = axios.create({
 });
 
 export default function SearchPage() {
-  const { data: session, status } = useSession();
-  const router = useRouter();
-  const intl = useIntl();
   const [searchType, setSearchType] = useState('title');
   const [searchTerm, setSearchTerm] = useState('');
   const [books, setBooks] = useState<Book[]>([]);
@@ -99,16 +93,40 @@ export default function SearchPage() {
         console.log('Processed books data:', booksData);
 
         // Process the books data according to the API response structure
-        const processedBooks = booksData.map((book: any) => {
-          console.log('Processing book:', book);
-          // Ensure we're using the correct title from the API response
-          const title = book.original_title || book.title;
-          return {
-            book_id: book.isbn13,
-            isbn13: book.isbn13,
+        const processedBooks = booksData.map((bookWrapper: any, index: number) => {
+          console.log('Full bookWrapper object:', bookWrapper);
+
+          // The actual book data is nested inside a "Book" property
+          const book = bookWrapper.Book || bookWrapper;
+          console.log('Extracted book object:', book);
+
+          // Let's see what properties are actually available
+          console.log('Book properties:', Object.keys(book));
+
+          // Safely extract title, handling undefined/null values
+          const title = book.original_title || book.title || 'Untitled';
+          const originalTitle = book.original_title || book.title || '';
+
+          // Better extraction of publication year - try multiple fields
+          const publicationYear = book.publication || book.original_publication_year || book.year || 'Year unknown';
+
+          // Log what we extracted
+          console.log('Extracted values:', {
+            title,
             authors: book.authors,
-            original_publication_year: book.publication,
-            original_title: book.original_title,
+            publication: book.publication,
+            year: publicationYear
+          });
+
+          // Generate a unique ID if isbn13 is missing
+          const bookId = book.isbn13 || book.isbn || `book-${Date.now()}-${index}`;
+
+          return {
+            book_id: bookId,
+            isbn13: bookId, // Use the same ID for both fields
+            authors: book.authors || 'Unknown Author',
+            original_publication_year: publicationYear,
+            original_title: originalTitle,
             title: title,
             average_rating: parseFloat(book.ratings?.average || 0),
             ratings_count: parseInt(book.ratings?.count || 0),
@@ -122,22 +140,54 @@ export default function SearchPage() {
           };
         });
 
+
         // Filter out any books where the title doesn't match the search term
         const filteredBooks = processedBooks.filter((book: Book) => {
           const searchTermLower = searchTerm.toLowerCase();
-          const bookTitleLower = book.title.toLowerCase();
-          const originalTitleLower = book.original_title?.toLowerCase() || '';
-          
-          const matches = bookTitleLower.includes(searchTermLower) || 
-                 originalTitleLower.includes(searchTermLower);
-          
+
+          let matches = false;
+
+          switch (searchType) {
+            case 'title':
+              // For title search, match against book titles
+              const bookTitleLower = (book.title || '').toLowerCase();
+              const originalTitleLower = (book.original_title || '').toLowerCase();
+              matches = bookTitleLower.includes(searchTermLower) || originalTitleLower.includes(searchTermLower);
+              break;
+
+            case 'author':
+              // For author search, match against authors
+              const authorsLower = (book.authors || '').toLowerCase();
+              matches = authorsLower.includes(searchTermLower);
+              break;
+
+            case 'year':
+              // For year search, match against publication year
+              const bookYear = String(book.original_publication_year || '');
+              matches = bookYear.includes(searchTerm);
+              break;
+
+            case 'rating':
+              // For rating search, match against average rating
+              const bookRating = Math.floor(book.average_rating || 0);
+              const searchRating = parseInt(searchTerm);
+              matches = bookRating >= searchRating;
+              break;
+
+            default:
+              matches = true; // If unknown search type, include all books
+          }
+
           console.log('Book match check:', {
+            searchType,
             searchTerm: searchTermLower,
-            bookTitle: bookTitleLower,
-            originalTitle: originalTitleLower,
+            bookTitle: book.title,
+            bookAuthor: book.authors,
+            bookYear: book.original_publication_year,
+            bookRating: book.average_rating,
             matches
           });
-          
+
           return matches;
         });
 
@@ -147,48 +197,60 @@ export default function SearchPage() {
         setTotalBooks(filteredBooks.length);
         
         if (filteredBooks.length === 0) {
-          setError(intl.formatMessage({ id: 'books.search.noResults' }));
+          setError("No books found matching your search criteria");
         }
       } else {
         console.log('No data in response');
-        setError(intl.formatMessage({ id: 'books.search.noResults' }));
+        setError("No books found matching your search criteria");
       }
     } catch (err: any) {
       console.error('Error searching books:', err);
       console.error('Full error object:', JSON.stringify(err, null, 2));
-      console.error('Error details:', {
-        message: err.message,
-        response: err.response?.data,
-        status: err.response?.status,
-        headers: err.response?.headers,
-        config: err.config
+
+      // Log the actual request details
+      console.error('Request details:', {
+        url: err.config?.url,
+        method: err.config?.method,
+        baseURL: err.config?.baseURL,
+        fullURL: `${err.config?.baseURL}${err.config?.url}`
       });
-      
-      // Handle specific error messages from the API
-      if (err.response?.status === 404) {
-        setError(intl.formatMessage({ id: 'books.search.noResults' }));
-      } else if (err.response?.status === 400) {
-        setError(err.response.data.message || intl.formatMessage({ id: 'books.search.invalidInput' }));
+
+      // Log response details if available
+      if (err.response) {
+        console.error('Response status:', err.response.status);
+        console.error('Response headers:', err.response.headers);
+        console.error('Response data:', err.response.data);
+
+        // Check if it's a CORS issue
+        if (err.response.status === 0) {
+          setError('Network error - possible CORS issue');
+        } else if (err.response.status === 404) {
+          setError(`No books found for ${searchType}: "${searchTerm}"`);
+        } else if (err.response.status === 400) {
+          setError(`Invalid search parameter: ${err.response.data?.message || 'Bad request'}`);
+        } else if (err.response.status >= 500) {
+          setError('Server error - please try again later');
+        } else {
+          setError(`API Error (${err.response.status}): ${err.response.data?.message || 'Unknown error'}`);
+        }
+      } else if (err.request) {
+        console.error('No response received:', err.request);
+        setError('Network error - no response from server');
       } else {
-        setError(intl.formatMessage({ id: 'books.search.error' }));
+        console.error('Request setup error:', err.message);
+        setError(`Request error: ${err.message}`);
       }
     } finally {
       setLoading(false);
     }
   };
 
-  if (status === 'loading') {
-    return (
-      <Box display="flex" justifyContent="center" alignItems="center" minHeight="400px">
-        <CircularProgress />
-      </Box>
-    );
-  }
+
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
       <Typography variant="h4" component="h1" gutterBottom>
-        {intl.formatMessage({ id: 'books.search.title' })}
+        Search Books
       </Typography>
 
       <Box component="form" onSubmit={handleSearch} sx={{ mb: 4 }}>
@@ -197,25 +259,25 @@ export default function SearchPage() {
             select
             value={searchType}
             onChange={(e) => setSearchType(e.target.value)}
-            label={intl.formatMessage({ id: 'books.search.searchBy' })}
+            label= "Search By"
             sx={{ minWidth: 200 }}
           >
-            <MenuItem value="title">{intl.formatMessage({ id: 'books.search.byTitle' })}</MenuItem>
-            <MenuItem value="author">{intl.formatMessage({ id: 'books.search.byAuthor' })}</MenuItem>
-            <MenuItem value="year">{intl.formatMessage({ id: 'books.search.byYear' })}</MenuItem>
-            <MenuItem value="rating">{intl.formatMessage({ id: 'books.search.byRating' })}</MenuItem>
+            <MenuItem value="title">Title</MenuItem>
+            <MenuItem value="author">Author</MenuItem>
+            <MenuItem value="year">Publication Year</MenuItem>
+            <MenuItem value="rating">Rating</MenuItem>
           </TextField>
 
           <TextField
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            label={intl.formatMessage({ id: 'books.search.searchTerm' })}
+            label={"Search Term "}
             placeholder={
-              searchType === 'year' 
-                ? intl.formatMessage({ id: 'books.search.enterYear' })
+              searchType === 'year'
+                ? 'Enter publication year (e.g., 1990)'
                 : searchType === 'rating'
-                ? intl.formatMessage({ id: 'books.search.enterRating' })
-                : intl.formatMessage({ id: 'books.search.enterSearchTerm' })
+                  ? 'Enter minimum rating (1-5)'
+                  : 'Enter search term'
             }
             type={searchType === 'year' || searchType === 'rating' ? 'number' : 'text'}
             sx={{ flexGrow: 1 }}
@@ -229,10 +291,10 @@ export default function SearchPage() {
             {loading ? (
               <>
                 <CircularProgress size={24} sx={{ mr: 1 }} />
-                {intl.formatMessage({ id: 'books.loading' })}
+                {"Loading..."}
               </>
             ) : (
-              intl.formatMessage({ id: 'books.search.search' })
+              "Search"
             )}
           </Button>
         </Box>
@@ -246,7 +308,7 @@ export default function SearchPage() {
 
       {books.length > 0 && (
         <Typography variant="subtitle1" color="text.secondary" gutterBottom>
-          {intl.formatMessage({ id: 'books.total-books' }, { count: totalBooks })}
+          {`Found ${totalBooks} books`}
         </Typography>
       )}
 
