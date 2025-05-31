@@ -37,13 +37,13 @@ export default function SearchPage() {
           endpoint = `/books/title/${encodeURIComponent(searchTerm.trim())}`;
           break;
         case 'author':
-          endpoint = `/books/author/${encodeURIComponent(searchTerm.trim())}`;
+          endpoint = `/author/${encodeURIComponent(searchTerm.trim())}`; // Fixed URL
           break;
         case 'year':
           endpoint = `/books/year/${encodeURIComponent(searchTerm.trim())}`;
           break;
         case 'rating':
-          endpoint = `/books/rating/${encodeURIComponent(searchTerm.trim())}`;
+          endpoint = `/books/retrieveRating/${encodeURIComponent(searchTerm.trim())}`; // Fixed URL
           break;
       }
 
@@ -62,11 +62,11 @@ export default function SearchPage() {
           if (response.data.Book) {
             const book = response.data.Book;
             console.log('Title search found book:', book);
-            
+
             // Verify the book matches our search term
             const searchTermLower = searchTerm.toLowerCase();
             const bookTitleLower = (book.original_title || book.title || '').toLowerCase();
-            
+
             if (bookTitleLower.includes(searchTermLower)) {
               booksData = [book];
               console.log('Book matches search term');
@@ -82,9 +82,13 @@ export default function SearchPage() {
           } else {
             console.log('No book found in title search response:', response.data);
           }
-        } else if (searchType === 'author' || searchType === 'year') {
+        } else if (searchType === 'author') {
+          // Author search returns Books array (capital B)
+          booksData = response.data.Books || [];
+          console.log('Author search found books:', booksData.length);
+        } else if (searchType === 'year') {
           booksData = response.data.entries || [];
-          console.log('Author/Year search found entries:', booksData.length);
+          console.log('Year search found entries:', booksData.length);
         } else if (searchType === 'rating') {
           booksData = response.data.Books || [];
           console.log('Rating search found books:', booksData.length);
@@ -93,6 +97,7 @@ export default function SearchPage() {
         console.log('Processed books data:', booksData);
 
         // Process the books data according to the API response structure
+
         const processedBooks = booksData.map((bookWrapper: any, index: number) => {
           console.log('Full bookWrapper object:', bookWrapper);
 
@@ -108,13 +113,17 @@ export default function SearchPage() {
           const originalTitle = book.original_title || book.title || '';
 
           // Better extraction of publication year - try multiple fields
-          const publicationYear = book.publication || book.original_publication_year || book.year || 'Year unknown';
+          const publicationYear = book.publication || book.publication_year || book.original_publication_year || book.year || 'Year unknown';
+
+          // Fix author extraction - try both 'authors' and 'authorname'
+          const authors = book.authors || book.authorname || 'Unknown Author';
 
           // Log what we extracted
           console.log('Extracted values:', {
             title,
-            authors: book.authors,
+            authors,
             publication: book.publication,
+            publication_year: book.publication_year,
             year: publicationYear
           });
 
@@ -123,8 +132,8 @@ export default function SearchPage() {
 
           return {
             book_id: bookId,
-            isbn13: bookId, // Use the same ID for both fields
-            authors: book.authors || 'Unknown Author',
+            isbn13: bookId,
+            authors: authors, // This now handles both formats
             original_publication_year: publicationYear,
             original_title: originalTitle,
             title: title,
@@ -156,7 +165,6 @@ export default function SearchPage() {
               break;
 
             case 'author':
-              // For author search, match against authors
               const authorsLower = (book.authors || '').toLowerCase();
               matches = authorsLower.includes(searchTermLower);
               break;
@@ -168,9 +176,8 @@ export default function SearchPage() {
               break;
 
             case 'rating':
-              // For rating search, match against average rating
-              const bookRating = Math.floor(book.average_rating || 0);
-              const searchRating = parseInt(searchTerm);
+              const bookRating = Number(book.average_rating || 0);
+              const searchRating = Number(searchTerm);
               matches = bookRating >= searchRating;
               break;
 
