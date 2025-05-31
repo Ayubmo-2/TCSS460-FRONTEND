@@ -5,12 +5,14 @@ import { FormattedMessage } from 'react-intl';
 import BookOutlined from '@ant-design/icons/BookOutlined';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import ListAltIcon from '@mui/icons-material/ListAlt';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 
 // type
 import { NavItemType } from 'types/menu';
 
 // icons
-const icons = { BookOutlined, MenuBookIcon, ListAltIcon };
+const icons = { BookOutlined, MenuBookIcon, ListAltIcon, AddCircleOutlineIcon, DeleteOutlineIcon };
 
 // ==============================|| MENU ITEMS - BOOKS ||============================== //
 
@@ -38,6 +40,20 @@ const books: NavItemType = {
           type: 'item',
           url: '/books/list',
           icon: icons.ListAltIcon
+        },
+        {
+          id: 'create-book',
+          title: <FormattedMessage id="create-book" />,
+          type: 'item',
+          url: '/books/create',
+          icon: icons.AddCircleOutlineIcon
+        },
+        {
+          id: 'delete-book',
+          title: <FormattedMessage id="delete-book" />,
+          type: 'item',
+          url: '/books/delete',
+          icon: icons.DeleteOutlineIcon
         }
       ]
     }
