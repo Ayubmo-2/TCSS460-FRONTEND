@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import BookForm, { BookFormData } from '@/components/BookForm';
+import BookForm, { BookFormData } from '../../../components/BookForm';
 import { useRouter } from 'next/navigation';
 
 export default function CreateBookPage() {
