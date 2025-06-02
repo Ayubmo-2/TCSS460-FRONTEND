@@ -20,6 +20,18 @@
 - **Saturday, May 24 (2:00 PM – 3:30 PM)** – Discord  
   Live-tested password changes, created dummy accounts, finalized Create Book form inputs and validation.
 
+- **Sunday, May 26 (1:00 PM – 2:00 PM)** – Discord  
+  Reviewed current bugs and UI issues, discussed Vercel deployment requirements, and finalized which team members would push what.
+
+- **Tuesday, May 28 (4:30 PM – 6:00 PM)** – Discord  
+  Finalized book detail page behavior, tested 3rd-party API endpoints, ensured correct API key behavior.
+
+- **Wednesday, May 29 (12:00 PM – 1:30 PM)** – Discord  
+  Reviewed README tasks, validated beta requirements completion, fixed final bugs before merging.
+
+- **Saturday, June 1 (3:00 PM – 4:30 PM)** – Discord  
+  Final meeting to verify deployment to Vercel and Heroku. Reviewed README content and ensured it reflects all final work.
+
 _Communication during the sprint was primarily over Discord using voice chat and screen sharing. GitHub Issues and group chat were used to track tasks and fix bugs._
 
 ## **Sprint Comments (Beta II Sprint)**
