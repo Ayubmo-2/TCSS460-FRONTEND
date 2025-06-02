@@ -208,5 +208,18 @@
   "publisher": "Publisher",
   "book-not-found": "Book Not Found",
   "view-details": "View Details",
-  "search-books": "Search Books"
+  "search-books": "Search Books",
+  "create-book": "Create Book",
+  "book.title": "Title",
+  "book.authors": "Authors",
+  "book.isbn": "ISBN-13",
+  "book.publication-year": "Publication Year",
+  "book.image-url": "Image URL",
+  "book.image-url-help": "Enter a URL for the book cover image",
+  "book.description": "Description",
+  "book.genre": "Genre",
+  "book.language": "Language",
+  "book.publisher": "Publisher",
+  "cancel": "Cancel",
+  "create": "Create"
 } 
