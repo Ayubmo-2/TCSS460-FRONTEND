@@ -10,8 +10,8 @@ const axiosServices = axios.create({ baseURL: process.env.WEB_API_URL || 'http:/
 axiosServices.interceptors.request.use(
   async (config) => {
     const session = await getSession();
-    if (session?.token.accessToken) {
-      config.headers['Authorization'] = `Bearer ${session?.token.accessToken}`;
+    if (session?.accessToken) {
+      config.headers['Authorization'] = `Bearer ${session.accessToken}`;
     }
     return config;
   },
@@ -30,15 +30,27 @@ axiosServices.interceptors.response.use(
       return Promise.reject({
         message: 'Connection refused.'
       });
-    } else if (error.response.status >= 500) {
+    }
+
+    // Check if response exists before accessing its properties
+    if (!error.response) {
+      // Network error without response (timeout, DNS failure, etc.)
+      console.error('Network error without response:', error.message);
+      return Promise.reject({
+        message: 'Network error. Please check your connection.'
+      });
+    }
+
+    // Now we can safely access error.response.status
+    if (error.response.status >= 500) {
       return Promise.reject({ message: 'Server Error. Contact support' });
     } else if (error.response.status === 401 && !window.location.href.includes('/login')) {
       window.location.pathname = '/login';
     }
+
     return Promise.reject((error.response && error.response.data) || 'Server connection refused');
   }
 );
-
 export default axiosServices;
 
 export const fetcher = async (args: string | [string, AxiosRequestConfig]) => {

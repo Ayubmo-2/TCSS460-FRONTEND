@@ -32,8 +32,8 @@ export const authOptions: NextAuthOptions = {
           }
 
           // Mock API call - find user
-          const user = mockUsers.find(u => u.email === credentials.email.trim());
-          
+          const user = mockUsers.find((u) => u.email === credentials.email.trim());
+
           if (!user || user.password !== credentials.password) {
             throw new Error('Invalid credentials');
           }
@@ -68,7 +68,7 @@ export const authOptions: NextAuthOptions = {
           }
 
           // Mock API call - check if user exists
-          const existingUser = mockUsers.find(u => u.email === credentials.email.trim());
+          const existingUser = mockUsers.find((u) => u.email === credentials.email.trim());
           if (existingUser) {
             throw new Error('User already exists');
           }

@@ -84,8 +84,7 @@ export default function AuthRegister({ providers, csrfToken }: any) {
             .max(100, 'Email must be less than 100 characters')
             .required('Email is required')
             .matches(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, 'Invalid email format'),
-          company: Yup.string()
-            .max(100, 'Company name must be less than 100 characters'),
+          company: Yup.string().max(100, 'Company name must be less than 100 characters'),
           password: Yup.string()
             .required('Password is required')
             .min(8, 'Password must be at least 8 characters')
