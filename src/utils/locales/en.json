@@ -26,5 +26,9 @@
   "publisher": "Publisher",
   "back-to-list": "Back to Book List",
   "book-not-found": "Book Not Found",
-  "view-details": "View Details"
+  "view-details": "View Details",
+  "books.total-books": "Total Books: {count}",
+  "books.loaded-books": "Books loaded: {count}",
+  "books.fetch-error": "Error fetching books",
+  "navigation.list-books": "List Books"
 }

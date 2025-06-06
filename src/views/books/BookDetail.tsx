@@ -1,27 +1,21 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Box, Container, Typography, Rating, Paper, Grid, Button, TextField } from '@mui/material';
-import { mockBooks } from '../../utils/mockBooks';
 import Image from 'next/image';
+import { Book } from '@/types/book';
+import { useIntl } from 'react-intl';
 
-const BookDetail = () => {
-  const params = useParams();
+interface BookDetailProps {
+  book: Book;
+}
+
+const BookDetail = ({ book }: BookDetailProps) => {
   const router = useRouter();
-  const book = mockBooks.find((b) => b.id === (params as { id: string }).id);
-  const [rating, setRating] = useState(book?.rating || 0);
+  const intl = useIntl();
+  const [rating, setRating] = useState(book.average_rating || 0);
   const [comment, setComment] = useState('');
-
-  useEffect(() => {
-    if (!book) {
-      router.push('/books');
-    }
-  }, [book, router]);
-
-  if (!book) {
-    return null;
-  }
 
   const handleRatingChange = (event: React.SyntheticEvent, newValue: number | null) => {
     if (newValue !== null) {
@@ -38,15 +32,15 @@ const BookDetail = () => {
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-      <Button variant="outlined" onClick={() => router.push('/books')} sx={{ mb: 3 }}>
-        Back to Books
+      <Button variant="outlined" onClick={() => router.push('/books/list')} sx={{ mb: 3 }}>
+        {intl.formatMessage({ id: 'books.back-to-list' })}
       </Button>
 
       <Paper elevation={3} sx={{ p: 3 }}>
         <Grid container spacing={4}>
           <Grid item xs={12} md={4}>
             <Image
-              src={book.coverImage}
+              src={book.image_url || '/placeholder-book.jpg'}
               alt={book.title}
               width={500}
               height={600}
@@ -65,56 +59,34 @@ const BookDetail = () => {
             </Typography>
 
             <Typography variant="h6" color="text.secondary" gutterBottom>
-              by {book.author}
+              by {book.authors}
             </Typography>
 
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-              <Rating value={book.rating} precision={0.5} readOnly />
+              <Rating value={book.average_rating} precision={0.5} readOnly />
               <Typography variant="body2" color="text.secondary" sx={{ ml: 1 }}>
-                ({book.rating} average rating)
+                ({book.ratings_count} ratings)
               </Typography>
             </Box>
-
-            <Typography variant="body1" paragraph>
-              {book.description}
-            </Typography>
 
             <Grid container spacing={2} sx={{ mt: 2 }}>
               <Grid item xs={6}>
                 <Typography variant="subtitle2" color="text.secondary">
-                  Genre
+                  {intl.formatMessage({ id: 'books.published-year' })}
                 </Typography>
-                <Typography variant="body1">{book.genre}</Typography>
-              </Grid>
-              <Grid item xs={6}>
-                <Typography variant="subtitle2" color="text.secondary">
-                  Published Year
-                </Typography>
-                <Typography variant="body1">{book.publishedYear}</Typography>
+                <Typography variant="body1">{book.original_publication_year}</Typography>
               </Grid>
               <Grid item xs={6}>
                 <Typography variant="subtitle2" color="text.secondary">
                   ISBN
                 </Typography>
-                <Typography variant="body1">{book.isbn}</Typography>
+                <Typography variant="body1">{book.isbn13}</Typography>
               </Grid>
               <Grid item xs={6}>
                 <Typography variant="subtitle2" color="text.secondary">
-                  Pages
+                  {intl.formatMessage({ id: 'books.original-title' })}
                 </Typography>
-                <Typography variant="body1">{book.pageCount}</Typography>
-              </Grid>
-              <Grid item xs={6}>
-                <Typography variant="subtitle2" color="text.secondary">
-                  Language
-                </Typography>
-                <Typography variant="body1">{book.language}</Typography>
-              </Grid>
-              <Grid item xs={6}>
-                <Typography variant="subtitle2" color="text.secondary">
-                  Publisher
-                </Typography>
-                <Typography variant="body1">{book.publisher}</Typography>
+                <Typography variant="body1">{book.original_title}</Typography>
               </Grid>
             </Grid>
           </Grid>
@@ -123,24 +95,24 @@ const BookDetail = () => {
 
       <Paper elevation={3} sx={{ p: 3, mt: 4 }}>
         <Typography variant="h6" gutterBottom>
-          Rate this Book
+          {intl.formatMessage({ id: 'books.your-rating' })}
         </Typography>
         <form onSubmit={handleSubmit}>
           <Box sx={{ mb: 2 }}>
-            <Typography component="legend">Your Rating</Typography>
+            <Typography component="legend">{intl.formatMessage({ id: 'books.your-rating' })}</Typography>
             <Rating value={rating} precision={0.5} onChange={handleRatingChange} />
           </Box>
           <TextField
             fullWidth
             multiline
             rows={4}
-            label="Your Review"
+            label={intl.formatMessage({ id: 'books.your-review' })}
             value={comment}
             onChange={(e) => setComment(e.target.value)}
             sx={{ mb: 2 }}
           />
           <Button type="submit" variant="contained" color="primary">
-            Submit Review
+            {intl.formatMessage({ id: 'books.submit-review' })}
           </Button>
         </form>
       </Paper>

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
-import { authOptions } from 'utils/authOptions';
+import axiosInstance from '@/utils/axios';
 
 // Password validation functions (matching your client-side)
 function isNumber(value: string): boolean {
@@ -66,93 +66,34 @@ const mockUsers = [
   }
 ];
 
-export async function POST(request: NextRequest) {
+export async function PUT(request: Request) {
   try {
-    // Check if user is authenticated
-    const session = await getServerSession(authOptions);
-
-    if (!session || !session.user) {
-      return NextResponse.json(
-        { message: 'Unauthorized - Please log in' },
-        { status: 401 }
-      );
+    const session = await getServerSession();
+    if (!session || !session.accessToken) {
+      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
 
-    // Parse request body
-    const body = await request.json();
-    const { currentPassword, newPassword } = body;
+    const { oldPassword, newPassword } = await request.json();
 
-    // Validate required fields
-    if (!currentPassword || !newPassword) {
-      return NextResponse.json(
-        { message: 'Current password and new password are required' },
-        { status: 400 }
-      );
+    if (!oldPassword || !newPassword) {
+      return NextResponse.json({ message: 'Current password and new password are required' }, { status: 400 });
     }
 
-    // Validate new password format
-    const passwordValidation = validatePassword(newPassword);
-    if (!passwordValidation.isValid) {
-      return NextResponse.json(
-        {
-          message: 'New password does not meet requirements',
-          errors: passwordValidation.errors
-        },
-        { status: 400 }
-      );
-    }
+    const response = await axiosInstance.put('/changePassword', {
+      oldPassword,
+      newPassword
+    }, {
+      headers: {
+        Authorization: `Bearer ${session.accessToken}`
+      }
+    });
 
-    // Find user in mock database
-    const userEmail = session.user.email;
-    const userIndex = mockUsers.findIndex(user => user.email === userEmail);
-
-    if (userIndex === -1) {
-      return NextResponse.json(
-        { message: 'User not found' },
-        { status: 404 }
-      );
-    }
-
-    const user = mockUsers[userIndex];
-
-    // Verify current password
-    if (user.password !== currentPassword) {
-      return NextResponse.json(
-        { message: 'Current password is incorrect' },
-        { status: 400 }
-      );
-    }
-
-    // Check if new password is different from current
-    if (currentPassword === newPassword) {
-      return NextResponse.json(
-        { message: 'New password must be different from current password' },
-        { status: 400 }
-      );
-    }
-
-    // Update password in mock database
-    mockUsers[userIndex].password = newPassword;
-
-    // In a real application, you would:
-    // 1. Hash the new password before storing
-    // 2. Update the database
-    // 3. Potentially invalidate existing sessions
-    // 4. Send confirmation email
-
+    return NextResponse.json(response.data);
+  } catch (error: any) {
+    console.error('Change password error:', error);
     return NextResponse.json(
-      {
-        message: 'Password changed successfully',
-        timestamp: new Date().toISOString()
-      },
-      { status: 200 }
-    );
-
-  } catch (error) {
-    console.error('Password change error:', error);
-    return NextResponse.json(
-      { message: 'Internal server error' },
-      { status: 500 }
+      { message: error.response?.data?.message || 'Failed to change password' },
+      { status: error.response?.status || 500 }
     );
   }
 }

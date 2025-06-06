@@ -5,12 +5,14 @@ import { FormattedMessage } from 'react-intl';
 import BookOutlined from '@ant-design/icons/BookOutlined';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import ListAltIcon from '@mui/icons-material/ListAlt';
+import SearchIcon from '@mui/icons-material/Search';
+import AddIcon from '@mui/icons-material/Add';
 
 // type
 import { NavItemType } from 'types/menu';
 
 // icons
-const icons = { BookOutlined, MenuBookIcon, ListAltIcon };
+const icons = { BookOutlined, MenuBookIcon, ListAltIcon, SearchIcon, AddIcon };
 
 // ==============================|| MENU ITEMS - BOOKS ||============================== //
 
@@ -26,18 +28,32 @@ const books: NavItemType = {
       icon: icons.BookOutlined,
       children: [
         {
+          id: 'search-books',
+          title: <FormattedMessage id="search-books" />,
+          type: 'item',
+          url: '/Books/search',
+          icon: icons.SearchIcon
+        },
+        {
           id: 'view-book',
           title: <FormattedMessage id="view-book" />,
           type: 'item',
-          url: '/books/view',
+          url: '/Books/view',
           icon: icons.MenuBookIcon
         },
         {
           id: 'list-books',
           title: <FormattedMessage id="list-books" />,
           type: 'item',
-          url: '/books/list',
+          url: '/Books/list',
           icon: icons.ListAltIcon
+        },
+        {
+          id: 'create-book',
+          title: <FormattedMessage id="create-book" />,
+          type: 'item',
+          url: '/Books/create',
+          icon: icons.AddIcon
         }
       ]
     }

@@ -1,6 +1,7 @@
 // next
-import type { NextAuthOptions } from 'next-auth';
+import type { NextAuthOptions, User } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
+import axiosInstance from './axios';
 
 // Mock user data
 const mockUsers = [
@@ -16,40 +17,52 @@ const mockUsers = [
   }
 ];
 
+type CustomUser = User & {
+  accessToken?: string;
+  refreshToken?: string;
+};
+
 export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
-      id: 'login',
-      name: 'login',
+      name: 'Credentials',
       credentials: {
-        email: { name: 'email', label: 'Email', type: 'email', placeholder: 'Enter Email' },
-        password: { name: 'password', label: 'Password', type: 'password', placeholder: 'Enter Password' }
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" }
       },
       async authorize(credentials) {
-        try {
-          if (!credentials?.email || !credentials?.password) {
-            throw new Error('Email and password are required');
-          }
-
-          // Mock API call - find user
-          const user = mockUsers.find((u) => u.email === credentials.email.trim());
-
-          if (!user || user.password !== credentials.password) {
-            throw new Error('Invalid credentials');
-          }
-
-          return {
-            id: user.id,
-            email: user.email,
-            name: `${user.firstname} ${user.lastname}`,
-            accessToken: user.token,
-            refreshToken: user.refreshToken
-          };
-        } catch (error: any) {
-          console.error('Login error:', error);
-          throw new Error(error.message || 'Invalid credentials');
+        if (!credentials?.email || !credentials?.password) {
+          return null;
         }
-      }
+
+        try {
+          const res = await fetch('https://group4-tcss460-web-api-88aed6dd5161.herokuapp.com/auth/login', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              email: credentials.email,
+              password: credentials.password,
+            }),
+          });
+
+          const user = await res.json();
+
+          if (res.ok && user) {
+            return {
+              id: user.id,
+              email: user.email,
+              name: user.name,
+              accessToken: user.accessToken,
+            };
+          }
+          return null;
+        } catch (error) {
+          console.error('Auth error:', error);
+          return null;
+        }
+      },
     }),
     CredentialsProvider({
       id: 'register',
@@ -58,68 +71,57 @@ export const authOptions: NextAuthOptions = {
         firstname: { name: 'firstname', label: 'First Name', type: 'text', placeholder: 'Enter First Name' },
         lastname: { name: 'lastname', label: 'Last Name', type: 'text', placeholder: 'Enter Last Name' },
         email: { name: 'email', label: 'Email', type: 'email', placeholder: 'Enter Email' },
-        company: { name: 'company', label: 'Company', type: 'text', placeholder: 'Enter Company' },
-        password: { name: 'password', label: 'Password', type: 'password', placeholder: 'Enter Password' }
+        password: { name: 'password', label: 'Password', type: 'password', placeholder: 'Enter Password' },
+        username: { name: 'username', label: 'Username', type: 'text', placeholder: 'Enter Username' },
+        role: { name: 'role', label: 'Role', type: 'text', placeholder: 'Enter Role (1-5)' },
+        phone: { name: 'phone', label: 'Phone', type: 'text', placeholder: 'Enter Phone Number' }
       },
       async authorize(credentials) {
         try {
-          if (!credentials?.email || !credentials?.password || !credentials?.firstname || !credentials?.lastname) {
+          if (!credentials?.email || !credentials?.password || !credentials?.firstname || !credentials?.lastname || !credentials?.username || !credentials?.role || !credentials?.phone) {
             throw new Error('All required fields must be provided');
           }
 
-          // Mock API call - check if user exists
-          const existingUser = mockUsers.find((u) => u.email === credentials.email.trim());
-          if (existingUser) {
-            throw new Error('User already exists');
-          }
-
-          // Mock API call - create new user
-          const newUser = {
-            id: String(mockUsers.length + 1),
-            email: credentials.email.trim(),
-            password: credentials.password,
+          const response = await axiosInstance.post('/register', {
             firstname: credentials.firstname.trim(),
             lastname: credentials.lastname.trim(),
-            company: credentials.company?.trim() || '',
-            token: 'mock-jwt-token',
-            refreshToken: 'mock-refresh-token'
-          };
+            email: credentials.email.trim(),
+            password: credentials.password,
+            username: credentials.username.trim(),
+            role: credentials.role.trim(),
+            phone: credentials.phone.trim()
+          });
 
-          mockUsers.push(newUser);
-
-          return {
-            id: newUser.id,
-            email: newUser.email,
-            name: `${newUser.firstname} ${newUser.lastname}`,
-            accessToken: newUser.token,
-            refreshToken: newUser.refreshToken
-          };
+          if (response.data && response.data.accessToken && response.data.user) {
+            return {
+              id: response.data.user.id,
+              email: response.data.user.email,
+              name: response.data.user.name,
+              accessToken: response.data.accessToken,
+              refreshToken: '' // Not provided by API, but required by type
+            };
+          }
+          return null;
         } catch (error: any) {
           console.error('Registration error:', error);
-          throw new Error(error.message || 'Registration failed');
+          throw new Error(error.response?.data?.message || 'Registration failed');
         }
       }
     })
   ],
   callbacks: {
-    jwt: async ({ token, user, account }) => {
+    async jwt({ token, user }) {
       if (user) {
         token.accessToken = user.accessToken;
-        token.refreshToken = user.refreshToken;
-        token.id = user.id;
-        token.provider = account?.provider || 'credentials';
       }
       return token;
     },
-    session: ({ session, token }) => {
+    async session({ session, token }) {
       if (token) {
-        session.id = token.id;
-        session.provider = token.provider || 'credentials';
         session.accessToken = token.accessToken;
-        session.refreshToken = token.refreshToken;
       }
       return session;
-    }
+    },
   },
   pages: {
     signIn: '/login',
