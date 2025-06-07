@@ -35,7 +35,8 @@ const BookList = ({ books }: BookListProps) => {
 
   const handleBookClick = (book: Book) => {
     if (book.isbn13) {
-      router.push(`/books/${book.isbn13}`);
+      localStorage.setItem('lastViewedBook', JSON.stringify(book));
+      router.push(`/books/view`);
     } else {
       console.error('No ISBN available for book:', book);
     }

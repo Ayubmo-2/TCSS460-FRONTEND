@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 // material-ui
 import { Box, Card, CardContent, Grid, Rating, Typography, Container, Button, Stack, Divider } from '@mui/material';
@@ -8,23 +9,23 @@ import MenuBookIcon from '@mui/icons-material/MenuBook';
 
 // project import
 import MainCard from 'components/MainCard';
-
-// mock data for a single book
-const book = {
-  id: 1,
-  title: 'The Great Gatsby',
-  author: 'F. Scott Fitzgerald',
-  rating: 4.5,
-  description: 'A story of the fabulously wealthy Jay Gatsby and his love for the beautiful Daisy Buchanan.',
-  publishedYear: 1925,
-  genre: 'Fiction',
-  pages: 180,
-  language: 'English',
-  publisher: 'Scribner'
-};
+import { Book } from '@/types/book';
 
 export default function BookView() {
-  const [userRating, setUserRating] = useState<number>(book.rating);
+  const router = useRouter();
+  const [book, setBook] = useState<Book | null>(null);
+  const [userRating, setUserRating] = useState<number>(0);
+
+  useEffect(() => {
+    const lastViewedBook = localStorage.getItem('lastViewedBook');
+    if (lastViewedBook) {
+      const bookData = JSON.parse(lastViewedBook);
+      setBook(bookData);
+      setUserRating(bookData.average_rating || 0);
+    } else {
+      router.push('/books/list');
+    }
+  }, [router]);
 
   const handleRatingChange = (event: React.SyntheticEvent, newValue: number | null) => {
     if (newValue !== null) {
@@ -33,13 +34,29 @@ export default function BookView() {
     }
   };
 
+  if (!book) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight="400px">
+        <Typography>Loading book details...</Typography>
+      </Box>
+    );
+  }
+
   return (
     <MainCard title={book.title}>
       <Container maxWidth="lg">
         <Grid container spacing={4}>
           <Grid item xs={12} md={4}>
             <Card sx={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', p: 4 }}>
-              <MenuBookIcon sx={{ fontSize: 200, color: 'primary.main' }} />
+              {book.image_url ? (
+                <img 
+                  src={book.image_url} 
+                  alt={book.title}
+                  style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
+                />
+              ) : (
+                <MenuBookIcon sx={{ fontSize: 200, color: 'primary.main' }} />
+              )}
             </Card>
           </Grid>
           <Grid item xs={12} md={8}>
@@ -49,7 +66,7 @@ export default function BookView() {
                   {book.title}
                 </Typography>
                 <Typography variant="h6" color="text.secondary" gutterBottom>
-                  by {book.author}
+                  by {book.authors}
                 </Typography>
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                   <Typography variant="subtitle1" sx={{ mr: 1 }}>
@@ -58,35 +75,28 @@ export default function BookView() {
                   <Rating value={userRating} precision={0.5} onChange={handleRatingChange} size="large" />
                 </Box>
                 <Divider sx={{ my: 2 }} />
-                <Typography variant="body1" paragraph>
-                  {book.description}
-                </Typography>
                 <Stack spacing={2}>
                   <Grid container spacing={2}>
                     <Grid item xs={6}>
                       <Typography variant="subtitle2">Published Year:</Typography>
-                      <Typography variant="body2">{book.publishedYear}</Typography>
+                      <Typography variant="body2">{book.original_publication_year}</Typography>
                     </Grid>
                     <Grid item xs={6}>
-                      <Typography variant="subtitle2">Genre:</Typography>
-                      <Typography variant="body2">{book.genre}</Typography>
+                      <Typography variant="subtitle2">ISBN:</Typography>
+                      <Typography variant="body2">{book.isbn13}</Typography>
                     </Grid>
                     <Grid item xs={6}>
-                      <Typography variant="subtitle2">Pages:</Typography>
-                      <Typography variant="body2">{book.pages}</Typography>
+                      <Typography variant="subtitle2">Original Title:</Typography>
+                      <Typography variant="body2">{book.original_title}</Typography>
                     </Grid>
                     <Grid item xs={6}>
-                      <Typography variant="subtitle2">Language:</Typography>
-                      <Typography variant="body2">{book.language}</Typography>
-                    </Grid>
-                    <Grid item xs={12}>
-                      <Typography variant="subtitle2">Publisher:</Typography>
-                      <Typography variant="body2">{book.publisher}</Typography>
+                      <Typography variant="subtitle2">Average Rating:</Typography>
+                      <Typography variant="body2">{book.average_rating?.toFixed(2)} ({book.ratings_count} ratings)</Typography>
                     </Grid>
                   </Grid>
                 </Stack>
                 <Box sx={{ mt: 3 }}>
-                  <Button variant="contained" color="primary" href="/books/list">
+                  <Button variant="contained" color="primary" onClick={() => router.push('/books/list')}>
                     Back to Book List
                   </Button>
                 </Box>
