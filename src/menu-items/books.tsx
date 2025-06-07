@@ -31,28 +31,28 @@ const books: NavItemType = {
           id: 'search-books',
           title: <FormattedMessage id="search-books" />,
           type: 'item',
-          url: '/Books/search',
+          url: '/books/search',
           icon: icons.SearchIcon
         },
         {
           id: 'view-book',
           title: <FormattedMessage id="view-book" />,
           type: 'item',
-          url: '/Books/view',
+          url: '/books/view',
           icon: icons.MenuBookIcon
         },
         {
           id: 'list-books',
           title: <FormattedMessage id="list-books" />,
           type: 'item',
-          url: '/Books/list',
+          url: '/books/list',
           icon: icons.ListAltIcon
         },
         {
           id: 'create-book',
           title: <FormattedMessage id="create-book" />,
           type: 'item',
-          url: '/Books/create',
+          url: '/books/create',
           icon: icons.AddIcon
         }
       ]

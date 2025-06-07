@@ -68,7 +68,9 @@ export default function SearchPage() {
             const bookTitleLower = (book.original_title || book.title || '').toLowerCase();
 
             if (bookTitleLower.includes(searchTermLower)) {
-              booksData = [book];
+              booksData = [{
+                Book: book
+              }];
               console.log('Book matches search term');
             } else {
               console.log('Book does not match search term:', {

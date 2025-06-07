@@ -33,6 +33,14 @@ const BookList = ({ books }: BookListProps) => {
     );
   }
 
+  const handleBookClick = (book: Book) => {
+    if (book.isbn13) {
+      router.push(`/books/${book.isbn13}`);
+    } else {
+      console.error('No ISBN available for book:', book);
+    }
+  };
+
   return (
     <Grid container spacing={3}>
       {uniqueBooks.map((book, index) => (
@@ -49,10 +57,7 @@ const BookList = ({ books }: BookListProps) => {
                 boxShadow: 3
               }
             }}
-            onClick={() => {
-              console.log('Clicked book:', book);
-              router.push(`/books/${book.isbn13}`);
-            }}
+            onClick={() => handleBookClick(book)}
           >
             <CardMedia
               component="img"
