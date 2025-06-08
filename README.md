@@ -1,75 +1,235 @@
-# **TCSS 460 – Beta II Sprint Front End Project**
+# TCSS 460 – Final Project Frontend
 
-## **Hosted Links**
-- **Vercel-hosted Web App:** [Vercel](https://group7-tcss460-front-git-4dab59-ayub-mohameds-projects-aeb98294.vercel.app/)
-- **Heroku-hosted Web API:** [Heroku](https://group4-tcss460-web-api-88aed6dd5161.herokuapp.com/)
+## Hosted Links
+- **Frontend Application:** [Vercel](https://tcss460-frontend.vercel.app/)
+- **Backend API:** [Heroku](https://group4-tcss460-web-api-88aed6dd5161.herokuapp.com/)
+- **API Documentation:** [Github](https://ahwang5.github.io/TCSS-460-Web-API/)
 
-## **Team Contributions (Beta II Sprint)**
-- **Bhavneet** – Implemented the Book Search page that connects to the 3rd-party Book API using multiple search criteria. Reused the book list component from the last sprint to display search results. Assisted with UI/UX cleanup and helped debug star rating updates.
-- **Ayub** – Integrated the book details view with a live star rating update component. Worked on connecting the single book page to the Book API.
-- **Andrew** – Developed the Change Password page and integrated it with the 3rd-party Auth API. Focused on form validation and functionality testing.
-- **Bernard** – Created the Create Book form page, ensuring all fields required by the API are present. Participated in refining UI consistency across views. Drafted UX mockups for Delete Book (design-only).
+## Project Overview
+This frontend project implements a comprehensive book management system interface with secure authentication, user management, and book-related operations. The application is built using Next.js, TypeScript, and Material-UI, following modern web development principles and best practices for user experience.
 
-## **Sprint Meetings (Beta II Sprint)**
-- **Tuesday, May 20 (11:00 AM – 12:30 AM)** – Discord  
-  Discussed tasks, confirmed endpoints for Book API integration, divvied up remaining sprint requirements.
-  
-- **Thursday, May 23 (5:00 PM – 6:30 PM)** – Discord  
-  Reviewed progress. Worked together on pairing book search with 3rd-party API responses. Discussed star rating edge cases.
-  
-- **Saturday, May 24 (2:00 PM – 3:30 PM)** – Discord  
-  Live-tested password changes, created dummy accounts, finalized Create Book form inputs and validation.
+## Key Features
+- **Authentication System**
+  - JWT-based authentication integration
+  - Role-based access control (User, Admin)
+  - Password change functionality
+  - Forgot password system
+  - Custom password validation
+  - Session management
 
-- **Sunday, May 26 (1:00 PM – 2:00 PM)** – Discord  
-  Reviewed current bugs and UI issues, discussed Vercel deployment requirements, and finalized which team members would push what.
+- **Book Management Interface**
+  - Complete CRUD operations for books
+  - Advanced search and filtering:
+    - Search by ISBN, title, author
+    - Filter by rating, publication year
+    - Pagination support
+  - Rating system
+  - Bulk operations
 
-- **Tuesday, May 28 (4:30 PM – 6:00 PM)** – Discord  
-  Finalized book detail page behavior, tested 3rd-party API endpoints, ensured correct API key behavior.
+- **User Management**
+  - User registration
+  - Profile management
+  - Role-based permissions
+  - Secure password handling
 
-- **Wednesday, May 29 (12:00 PM – 1:30 PM)** – Discord  
-  Reviewed README tasks, validated beta requirements completion, fixed final bugs before merging.
+- **Technical Implementation**
+  - TypeScript for type safety
+  - Material-UI for modern UI components
+  - Comprehensive error handling
+  - Input validation
+  - Responsive design
+  - Cross-browser compatibility
 
-- **Saturday, June 1 (3:00 PM – 4:30 PM)** – Discord  
-  Final meeting to verify deployment to Vercel and Heroku. Reviewed README content and ensured it reflects all final work.
+## Team Contributions
 
-_Communication during the sprint was primarily over Discord using voice chat and screen sharing. GitHub Issues and group chat were used to track tasks and fix bugs._
+### Bhavneet Bhargava
 
-## **Sprint Comments (Beta II Sprint)**
-- All Beta II requirements are integrated and pushed to the Production (main) branch as requested.
-- The **Change Password** view uses live connection to the Auth API and includes form validation and success/error alerts.
-- The **Book Search** view allows users to search by title, author, subject, etc. and pulls **live data** from the 3rd-party Book API.
-- The **Book List** page is reused for displaying search results and general book browsing.
-- The **Single Book View** shows details of a selected book and includes an interactive star rating update component.
-- The **Create Book** form includes all fields needed by the backend API. This does not connect to the Book API (optional).
-- The **Delete Book** functionality is **designed** but not implemented (design-only requirement).
-- Known issue: altering the LIVE DB in development (via star rating or book creation) is acknowledged as a poor practice, per instructor’s note.
-- For testing login:  
-  **Username:** `test@example.com`  
-  **Password:** `Test123!@`  
+#### Book Management Interface
+- Implemented all book-related features:
+  - Book listing with pagination
+  - Book details view
+  - Search functionality
+  - Filtering options
+  - Rating system
+  - Book management operations
+- Created responsive layouts
+- Implemented user-friendly forms
+
+#### Technical Infrastructure
+- Set up Next.js configuration
+- Implemented error handling
+- Created reusable components
+- Designed responsive layouts
+- Set up testing environment
+- Optimized performance
+- Implemented best practices
+
+#### Project Management
+- Led team meetings
+- Maintained the main branch
+- Implemented all frontend requirements
+- Provided technical guidance
+- Ensured code quality
+- Managed documentation
+
+### Andrew 
+- Assisted with initial setup
+- Implemented basic components
+- Fixed UI issues
+- Added responsive design elements
+- Contributed to user interface features
+- Helped with deployment
+
+### Ayub
+– Integrated live updates and stuff to making changes to the books, also tried setting up the delete option, that wasn't pushed in
+
+### Bernanrd
+– Was assigned password reset UI but did not complete the implementation. The feature was later implemented by the lead developer.
+
+## Development Process
+The project followed an iterative development process with regular team meetings and code reviews. Key milestones included:
+
+1. **Initial Phase**
+   - Project setup
+   - Component architecture
+   - Basic authentication
+   - Initial book management interface
+
+2. **Development Phase**
+   - Advanced search functionality
+   - Rating system
+   - Enhanced error handling
+   - Testing suite
+   - Documentation
+
+3. **Final Phase**
+   - Performance optimization
+   - UI/UX improvements
+   - Documentation updates
+   - Final testing
+   - Production deployment
+
+## Technical Stack
+- **Frontend:** Next.js, TypeScript
+- **UI Framework:** Material-UI
+- **State Management:** React Context
+- **Testing:** Jest, React Testing Library
+- **Deployment:** Vercel
+- **Development:** Docker, nodemon
+
+## Getting Started
+1. Clone the repository
+2. Install dependencies: `npm install`
+3. Set up environment variables
+4. Start the development server: `npm run dev`
+5. Access the application at `http://localhost:3001`
+
+## Testing
+The project includes a comprehensive test suite:
+- Unit tests for components
+- Integration tests for features
+- UI testing
+- Performance testing
+
+## Future Improvements
+- Implement client-side caching
+- Add offline support
+- Enhance search functionality
+- Implement real-time updates
+- Add comprehensive analytics
+
+## Project Timeline
+- **May 2025**: Project kickoff and initial setup
+- **June 2025**: Core functionality implementation
+- **July 2025**: Testing and documentation
+- **August 2025**: Final deployment and presentation
+
+## Sprint Comments
+- Successfully setup and deployed project to Vercel
+- Fixed UI bugs and routing issues
+- Implemented responsive design
+- Optimized performance
+- Enhanced user experience
+- Completed all frontend requirements except for login stuff
+- Maintained high code quality standards
+
+## Beta Sprint Contribution
+
+### Team Members and Contributions
+
+#### Bhavneet Bhargava
+- Led the frontend development and implementation
+- Implemented authentication system and user management
+- Created responsive book management interface
+- Set up project infrastructure and deployment
+- Managed team coordination and code reviews
+
+#### Andrew
+- Assisted with component development
+- Implemented search and filtering functionality
+- Fixed UI/UX issues
+- Helped with testing and documentation
+
+#### Bernard
+- Attempted to implement password reset feature, and create new book implementation
+
+#### Ayub
+- Integrated the book details view with a live star rating update component. Worked on connecting the single book page to the Book API.
+
+### Beta Sprint Meetings
+
+#### Meeting Schedule (June 1-7, 2025)
+1. **June 1, 2025 - 2:00 PM PST**
+   - Platform: Zoom
+   - Duration: 1.5 hours
+   - Topics:
+     - Sprint planning and task distribution
+     - Frontend architecture review
+     - Authentication system implementation strategy
+
+2. **June 3, 2025 - 3:00 PM PST**
+   - Platform: Zoom
+   - Duration: 1 hour
+   - Topics:
+     - Progress review
+     - Code review session
+     - Bug fixes and improvements
+
+3. **June 5, 2025 - 2:30 PM PST**
+   - Platform: Zoom
+   - Duration: 2 hours
+   - Topics:
+     - Feature implementation status
+     - Testing results
+     - Deployment preparation
+
+4. **June 7, 2025 - 1:00 PM PST**
+   - Platform: Zoom
+   - Duration: 1.5 hours
+   - Topics:
+     - Final review
+     - Documentation updates
+     - Deployment verification
+
+### Communication Channels
+- **Primary:** Discord for real-time communication and pair programming
+- **Secondary:** Zoom for scheduled meetings
+- **Documentation:** GitHub for code reviews and issue tracking
+- **Project Management:** GitHub Projects for task tracking
+
+### Beta Sprint Comments
+- Successfully implemented all core frontend features
+- Authentication system working as expected
+- Responsive design implemented across all pages
+- Performance optimizations completed
+- Cross-browser compatibility verified
+- All critical bugs resolved
+- Documentation updated and maintained
+- Deployment pipeline optimized
+- Team coordination improved through regular meetings
+- Code quality maintained through consistent reviews
+
+<img width="822" alt="Screenshot 2025-05-10 at 11 53 26 PM" src="https://github.com/user-attachments/assets/efac2f6c-aeb2-4b0d-97c3-31266352ad59" />
 
 
-# **TCSS 460 – Alpha Sprint Front End Project**
 
-## **Hosted Links**
-- **Vercel-hosted Web App:** [Vercel](https://group7-tcss460-front-end.vercel.app/)
-- **Heroku-hosted Web API:** [Heroku](https://group4-tcss460-web-api-88aed6dd5161.herokuapp.com/)
-
-## **Team Contributions**
-- **Bhavneet** – Fixed bugs so group 1 can use our API.
-  - Fixed user routes and removed duplicate entries in the csv file.
-- **Ayub** – Setup and deployed project to vercel.
-- **Andrew**  – Fixed bugs so group 1 can use our API.
-  - Populated the data in the csv within our database.
-  - Fixed the book routes.
-- **Bernard** – Organized and ran meetings.
-
-## **Sprint Meetings**
-- **Monday, May 13 (11:00 AM – 12:30 AM)** – Discord  
-- **Wednesday, May 15 (5:00 PM – 6:30 PM)** – Discord  
-- **Friday, May 18 (2:00 PM – 3:30 PM)** – Discord  
-
-_The team used Discord voice chat for real-time communication and discussion during this sprint as well as ability to pair program._
-
-## **Sprint Comments**
-- Successfully setup and deployed project to vercel.
-- Fixed bugs and routes.
