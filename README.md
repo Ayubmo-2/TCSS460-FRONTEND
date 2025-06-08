@@ -3,7 +3,7 @@
 ## Hosted Links
 - **Frontend Application:** [Vercel](https://tcss460-frontend.vercel.app/)
 - **Backend API:** [Heroku](https://group4-tcss460-web-api-88aed6dd5161.herokuapp.com/)
-- **API Documentation:** [Github](https://ahwang5.github.io/TCSS-460-Web-API/)
+- **API Documentation:** https://lionesscub807.github.io/TCSS-460-WebAPI/#api-Auth-GenerateNonUsableToken
 
 ## Project Overview
 This frontend project implements a comprehensive book management system interface with secure authentication, user management, and book-related operations. The application is built using Next.js, TypeScript, and Material-UI, following modern web development principles and best practices for user experience.
