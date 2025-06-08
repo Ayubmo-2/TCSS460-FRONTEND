@@ -44,15 +44,6 @@ This frontend project implements a comprehensive book management system interfac
 
 ### Bhavneet Bhargava
 
-#### Authentication & Security
-- Implemented the complete authentication system
-- JWT token management
-- Password change functionality
-- Forgot password system
-- Custom password validation
-- Session management
-- Role-based access control
-
 #### Book Management Interface
 - Implemented all book-related features:
   - Book listing with pagination
@@ -94,9 +85,6 @@ This frontend project implements a comprehensive book management system interfac
 
 ### Bernanrd
 – Was assigned password reset UI but did not complete the implementation. The feature was later implemented by the lead developer.
-
-
- Was assigned password reset UI but did not complete the implementation. The feature was later implemented by the lead developer.
 
 ## Development Process
 The project followed an iterative development process with regular team meetings and code reviews. Key milestones included:
