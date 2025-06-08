@@ -2,6 +2,7 @@
 
 // next
 import NextLink from 'next/link';
+import { useEffect, useState } from 'react';
 import { getProviders, getCsrfToken } from 'next-auth/react';
 
 // material-ui
@@ -15,8 +16,21 @@ import AuthWrapper from 'sections/auth/AuthWrapper';
 import AuthLogin from 'sections/auth/auth-forms/AuthLogin';
 
 export default function SignIn() {
-  const csrfToken = getCsrfToken();
-  const providers = getProviders();
+  const [csrfToken, setCsrfToken] = useState<string | undefined>();
+  const [providers, setProviders] = useState<any>();
+
+  useEffect(() => {
+    const fetchAuthData = async () => {
+      const [tokenResponse, providersResponse] = await Promise.all([
+        getCsrfToken(),
+        getProviders()
+      ]);
+      setCsrfToken(tokenResponse);
+      setProviders(providersResponse);
+    };
+
+    fetchAuthData();
+  }, []);
 
   return (
     <AuthWrapper>
