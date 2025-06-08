@@ -117,8 +117,8 @@ const AuthChangePassword = () => {
                 'Content-Type': 'application/json',
               },
               body: JSON.stringify({
-                oldPassword: values.currentPassword,    // ✅ Changed from 'currentPassword' to 'oldPassword'
-                newPassword: values.password           // ✅ This was already correct
+                currentPassword: values.currentPassword,
+                newPassword: values.password
               }),
             });
 
