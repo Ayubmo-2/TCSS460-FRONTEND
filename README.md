@@ -43,7 +43,6 @@ This frontend project implements a comprehensive book management system interfac
 ## Team Contributions
 
 ### Bhavneet Bhargava
-As the primary developer and maintainer of the frontend application, I implemented and maintained the majority of the project's functionality:
 
 #### Authentication & Security
 - Implemented the complete authentication system
@@ -82,7 +81,7 @@ As the primary developer and maintainer of the frontend application, I implement
 - Ensured code quality
 - Managed documentation
 
-### Andrew – Secondary Developer
+### Andrew 
 - Assisted with initial setup
 - Implemented basic components
 - Fixed UI issues
@@ -90,9 +89,14 @@ As the primary developer and maintainer of the frontend application, I implement
 - Contributed to user interface features
 - Helped with deployment
 
-### Other Team Members
-- **Bernard** – Was assigned password reset UI but did not complete the implementation. The feature was later implemented by the lead developer.
-- **Ayub** – Minimal contribution to the project.
+### Ayub
+– Integrated live updates and stuff to making changes to the books, also tried setting up the delete option, that wasn't pushed in
+
+### Bernanrd
+– Was assigned password reset UI but did not complete the implementation. The feature was later implemented by the lead developer.
+
+
+ Was assigned password reset UI but did not complete the implementation. The feature was later implemented by the lead developer.
 
 ## Development Process
 The project followed an iterative development process with regular team meetings and code reviews. Key milestones included:
