@@ -44,6 +44,7 @@ const BookDetail = ({ book }: BookDetailProps) => {
               alt={book.title}
               width={500}
               height={600}
+              priority
               style={{
                 width: '100%',
                 height: 'auto',
@@ -78,7 +79,7 @@ const BookDetail = ({ book }: BookDetailProps) => {
               </Grid>
               <Grid item xs={6}>
                 <Typography variant="subtitle2" color="text.secondary">
-                  ISBN
+                  {intl.formatMessage({ id: 'books.fields.isbn' })}
                 </Typography>
                 <Typography variant="body1">{book.isbn13}</Typography>
               </Grid>
