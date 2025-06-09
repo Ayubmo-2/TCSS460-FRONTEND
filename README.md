@@ -1,7 +1,7 @@
 # TCSS 460 – Final Project Frontend
 
 ## Hosted Links
-- **Frontend Application:** [Vercel](https://tcss460-frontend.vercel.app/)
+- **Frontend Application:** [Vercel](https://group7-tcss460-front-git-ef98ec-ayub-mohameds-projects-aeb98294.vercel.app/)
 - **Backend API:** [Heroku](https://group4-tcss460-web-api-88aed6dd5161.herokuapp.com/)
 - **API Documentation:** [Github](https://ahwang5.github.io/TCSS-460-Web-API/)
 
